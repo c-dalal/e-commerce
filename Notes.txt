@@ -1,0 +1,64 @@
+reack-hook-form library used
+@2:56:08
+we are making changes in Signup.js
+
+regex patten used for validating email
+
+regex pattern banane ke liye bhi ek website hoti hai.
+confirm password mein ek validate kr ke bhi method use ki hai
+jiski vgha se aap apna logic likh sakte
+
+
+AuthApi
+mein data bhjne ke liye controller bhj rahe hai.
+authSlice mein bhi uske according kuch function banana hoga.
+
+
+@3:06:46 authSlice mein selector banan hai 
+
+Protected.js routing mein use hoga.
+
+signup ko hi login mein copy paste kr ke usme kuch changes kr denge
+
+
+authSlice mein actions aur selectors hai.
+useForm from react-hook-form for handling form state and validation.
+
+
+login aur sign up se user jo information de raha hai
+usko hum ek slice jo ki authUser mein hai uske andar
+dispatch ke through action bhj rahe hai.
+
+import { useSelector } from "react-redux"; // It allows you to extract data from the Redux store state
+
+import { selectLoggedInUser } from "../authSlice";: 
+This line imports the selectLoggedInUser selector from the authSlice. 
+This selector is used to retrieve the logged-in 
+
+user information from the Redux store.
+
+
+Protected.js
+function Protected({children}) 
+{: This defines a functional component named Protected. 
+It takes a children prop, which represents the child components nested within it.
+
+const user = useSelector(selectLoggedInUser): 
+This line uses the useSelector hook to retrieve the loggedInUser object from the Redux store. 
+It selects the logged-in user information from the Redux store state.
+
+if(!user){ ... }: This conditional check verifies if there is a logged-in user. If there isn't (!user), 
+it returns the <Navigate> component, redirecting the user to the login page specified by the to='/login' prop.
+
+return children;: If there is a logged-in user, 
+it returns the children components passed to the Protected component. 
+This allows the child components to be rendered if the user is authenticated.
+
+authSlice.js explnation
+
+flow of data
+signup -> slice mein -> jaha se api call kiya gaya hai authAPI mein
+authSlice mein reducers define hote hai
+
+
+=================== Cart component ================================

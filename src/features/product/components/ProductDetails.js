@@ -2,7 +2,10 @@ import { useEffect, useState } from 'react'
 import { StarIcon } from '@heroicons/react/20/solid'
 import { RadioGroup } from '@headlessui/react'
 import { useDispatch, useSelector } from 'react-redux'
-import { selectProductById } from '../productSlice'
+import { fetchAllProductByIdAsync, selectProductById } from '../productSlice'
+import { useParams } from 'react-router-dom'
+import { addToCartAsync } from '../../cart/cartSlice'
+import { selectLoggedInUser } from '../../auth/authSlice'
 
 const product = {
   name: 'Basic Tee 6-Pack',
@@ -62,19 +65,32 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
 
+
+
 export default function ProductDetails() {
+  const user = useSelector(selectLoggedInUser)
   const [selectedColor, setSelectedColor] = useState(product.colors[0])
   const [selectedSize, setSelectedSize] = useState(product.sizes[2])
   const product = useSelector(selectProductById);
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
+  const params = useParams();
   //TODO: In server data we will add colors, sizes etc.
 
+  const handleCart = (e) => {
+    e.preventDefault();
+    const newItem  = {...product,quantity:1,user:user.id }
+    delete newItem['id'];
+    dispatch(addToCartAsync(newItem)) 
+  }
+
+
   useEffect(() => {
-dispatch
-  })
+dispatch(fetchAllProductByIdAsync(params.id))
+  },[dispatch, params.id])
+
   return (
     <div className="bg-white">
-      <div className="pt-6">
+    {product ?   <div className="pt-6">
         <nav aria-label="Breadcrumb">
           <ol role="list" className="mx-auto flex max-w-2xl items-center space-x-2 px-4 sm:px-6 lg:max-w-7xl lg:px-8">
             {product.breadcrumbs && product.breadcrumbs.map((breadcrumb) => (
@@ -108,31 +124,31 @@ dispatch
         <div className="mx-auto mt-6 max-w-2xl sm:px-6 lg:grid lg:max-w-7xl lg:grid-cols-3 lg:gap-x-8 lg:px-8">
           <div className="aspect-h-4 aspect-w-3 hidden overflow-hidden rounded-lg lg:block">
             <img
-              src={product.images[0].src}
-              alt={product.images[0].alt}
+              src={product.images[0]}
+              alt={product.title}
               className="h-full w-full object-cover object-center"
             />
           </div>
           <div className="hidden lg:grid lg:grid-cols-1 lg:gap-y-8">
             <div className="aspect-h-2 aspect-w-3 overflow-hidden rounded-lg">
               <img
-                src={product.images[1].src}
-                alt={product.images[1].alt}
+               src={product.images[1]}
+               alt={product.title}
                 className="h-full w-full object-cover object-center"
               />
             </div>
             <div className="aspect-h-2 aspect-w-3 overflow-hidden rounded-lg">
               <img
-                src={product.images[2].src}
-                alt={product.images[2].alt}
+                src={product.images[2]}
+                alt={product.title}
                 className="h-full w-full object-cover object-center"
               />
             </div>
           </div>
           <div className="aspect-h-5 aspect-w-4 lg:aspect-h-4 lg:aspect-w-3 sm:overflow-hidden sm:rounded-lg">
             <img
-              src={product.images[3].src}
-              alt={product.images[3].alt}
+               src={product.images[3]}
+               alt={product.title}
               className="h-full w-full object-cover object-center"
             />
           </div>
@@ -270,10 +286,11 @@ dispatch
               </div>
 
               <button
+              onClick={handleCart}
                 type="submit"
                 className="mt-10 flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 px-8 py-3 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
               >
-                Add to bag
+                Add to Cart
               </button>
             </form>
           </div>
@@ -293,7 +310,7 @@ dispatch
 
               <div className="mt-4">
                 <ul role="list" className="list-disc space-y-2 pl-4 text-sm">
-                  {product.highlights && product.highlights.map((highlight) => (
+                  {highlights.map((highlight) => (
                     <li key={highlight} className="text-gray-400">
                       <span className="text-gray-600">{highlight}</span>
                     </li>
@@ -311,7 +328,7 @@ dispatch
             </div>
           </div>
         </div>
-      </div>
+      </div> : null }
     </div>
   )
 }
